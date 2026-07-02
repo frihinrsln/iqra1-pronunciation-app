@@ -138,21 +138,32 @@ st.markdown("""
 
 /* Audio Recorder Styling */
 .stAudioRecorder {
-    display: flex;
-    justify-content: center;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.stAudioRecorder > div {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
 }
 
 .stAudioRecorder button {
-    background-color: #8ab878 !important;
-    border: 5px solid white !important;
+    background-color: transparent !important;
+    border: 5px solid rgba(255,255,255,0.9) !important;
     border-radius: 50% !important;
     width: 90px !important;
     height: 90px !important;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
 }
 
 .stAudioRecorder svg {
-    color: white !important;
+    color: #8ab878 !important;
 }
 
 .section-label {
@@ -274,13 +285,13 @@ st.markdown(
 )
 
 # Center microphone button
-col1, col2, col3 = st.columns([1,1,1])
+left, middle, right = st.columns([1.4, 1, 1.4])
 
-with col2:
+with middle:
     audio_bytes = audio_recorder(
         text="",
-        recording_color="#8ab878",
-        neutral_color="#8ab878",
+        recording_color="transparent",
+        neutral_color="transparent",
         icon_name="microphone",
         icon_size="3x",
     )
