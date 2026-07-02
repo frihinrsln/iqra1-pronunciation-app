@@ -4,3 +4,4 @@ numpy
 soundfile
 scikit-learn
 joblib
+audioread
