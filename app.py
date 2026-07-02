@@ -208,12 +208,12 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 arabic_map = {
-    "alif": "أ", "ba": "بَ", "ta": "تَ", "tha": "ثَ", "jim": "ج",
-    "hha": "ح", "kha": "خ", "dal": "د", "dhal": "ذ", "ra": "ر",
-    "zay": "ز", "sin": "س", "shin": "ش", "sad": "ص", "dad": "ض",
-    "tho": "ط", "zho": "ظ", "ain": "ع", "ghayn": "غ", "fa": "ف",
-    "qaf": "ق", "kaf": "ك", "lam": "ل", "mim": "م", "nun": "ن",
-    "ha": "ه", "waw": "و", "ya": "ي"
+    "alif": "أَ", "ba": "بَ", "ta": "تَ", "tha": "ثَ", "jim": "جَ",
+    "hha": "حَ", "kha": "خَ", "dal": "دَ", "dhal": "ذَ", "ra": "رَ",
+    "zay": "زَ", "sin": "سَ", "shin": "شَ", "sad": "صَ", "dad": "ضَ",
+    "tho": "طَ", "zho": "ظَ", "ain": "عَ", "ghayn": "غَ", "fa": "فَ",
+    "qaf": "قَ", "kaf": "كَ", "lam": "لَ", "mim": "مَ", "nun": "نَ",
+    "waw": "وَ", "ha": "هَ", "ya": "يَ"
 }
 
 huruf_list = list(arabic_map.keys())
