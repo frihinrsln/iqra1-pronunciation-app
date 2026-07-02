@@ -83,7 +83,8 @@ st.markdown("""
 }
 
 .header {
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
     color: #333;
     font-size: 14px;
     font-weight: 700;
@@ -136,36 +137,40 @@ st.markdown("""
     margin-bottom: 5px;
 }
 
-/* Audio Recorder Styling */
+.mic-circle {
+    width: 90px;
+    height: 90px;
+    margin: 12px auto 4px auto;
+    border-radius: 50%;
+    background: transparent;
+    border: 5px solid #8ab878;
+    color: #8ab878;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 42px;
+    box-shadow: 0 0 0 6px rgba(138,184,120,0.15);
+}
+
+/* Hide recorder default text area */
 .stAudioRecorder {
     display: flex !important;
     justify-content: center !important;
     width: 100% !important;
-    background: transparent !important;
+    margin-top: -5px !important;
 }
 
 .stAudioRecorder button {
-    background-color: #fffdf8 !important;
-    border: 5px solid #f6f4f1 !important;
-    border-radius: 50% !important;
-    width: 90px !important;
-    height: 90px !important;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.10);
+    background-color: #8ab878 !important;
+    border: none !important;
+    border-radius: 20px !important;
+    padding: 4px 12px !important;
+    min-height: 28px !important;
+    font-size: 12px !important;
 }
 
 .stAudioRecorder svg {
-    color: #8ab878 !important;
-}
-
-.stAudioRecorder svg {
-    color: #8ab878 !important;
-}
-
-.section-label {
-    font-weight: 700;
-    color: #24401f;
-    margin-top: 15px;
-    margin-bottom: 5px;
+    color: white !important;
 }
 
 .result-betul {
@@ -279,17 +284,18 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Center microphone button
-left, middle, right = st.columns([1.4, 1, 1.4])
+st.markdown(
+    '<div class="mic-circle">🎙️</div>',
+    unsafe_allow_html=True
+)
 
-with middle:
-    audio_bytes = audio_recorder(
-        text="",
-        recording_color="#fffdf8",
-        neutral_color="#fffdf8",
-        icon_name="microphone",
-        icon_size="3x",
-    )
+audio_bytes = audio_recorder(
+    text="Mula rakam",
+    recording_color="#e74c3c",
+    neutral_color="#8ab878",
+    icon_name="microphone",
+    icon_size="1x"
+)
 
 if audio_bytes:
     st.audio(audio_bytes, format="audio/wav")
