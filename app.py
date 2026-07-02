@@ -261,11 +261,17 @@ st.markdown('<div class="logo">📖</div>', unsafe_allow_html=True)
 st.markdown('<div class="title">Semakan Sebutan</div>', unsafe_allow_html=True)
 st.markdown('<div class="green-card">Iqra\' 1 - Halaman 1</div>', unsafe_allow_html=True)
 
+if "huruf_index" not in st.session_state:
+    st.session_state.huruf_index = 0
+
 target_huruf = st.selectbox(
     "Pilih huruf",
     huruf_list,
+    index=st.session_state.huruf_index,
     format_func=lambda x: f"{arabic_map[x]}  -  {x}"
 )
+
+st.session_state.huruf_index = huruf_list.index(target_huruf)
 
 st.markdown(
     f'<div class="big-letter">{arabic_map[target_huruf]}</div>',
@@ -357,12 +363,23 @@ if audio_source_path is not None:
 else:
     st.info("Sila rakam suara atau muat naik fail audio terlebih dahulu.")
 
-st.markdown("""
-<div class="nav-row">
-    <div class="nav-btn">‹ Sebelumnya</div>
-    <div class="nav-btn">Seterusnya ›</div>
-</div>
-<div class="home">⌂</div>
-""", unsafe_allow_html=True)
+prev_col, home_col, next_col = st.columns([1, 1, 1])
+
+with prev_col:
+    if st.button("‹ Sebelumnya"):
+        st.session_state.huruf_index = (
+            st.session_state.huruf_index - 1
+        ) % len(huruf_list)
+        st.rerun()
+
+with home_col:
+    st.markdown('<div class="home">⌂</div>', unsafe_allow_html=True)
+
+with next_col:
+    if st.button("Seterusnya ›"):
+        st.session_state.huruf_index = (
+            st.session_state.huruf_index + 1
+        ) % len(huruf_list)
+        st.rerun()
 
 st.markdown('</div>', unsafe_allow_html=True)
