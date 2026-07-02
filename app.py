@@ -5,11 +5,16 @@ import joblib
 import tempfile
 import soundfile as sf
 
+from audio_recorder_streamlit import audio_recorder
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
 MAX_LEN = 100
 N_MFCC = 13
 
 svm_model = joblib.load("iqra_huruf_svm_model_compressed.pkl")
 id_to_label = joblib.load("id_to_label.pkl")
+
 
 def extract_mfcc(file_path):
     y, sr = librosa.load(file_path, sr=16000, mono=True)
@@ -19,7 +24,6 @@ def extract_mfcc(file_path):
         return None
 
     y = librosa.util.normalize(y)
-
     mfcc = librosa.feature.mfcc(y=y, sr=16000, n_mfcc=N_MFCC)
 
     if mfcc.shape[1] < MAX_LEN:
@@ -29,6 +33,7 @@ def extract_mfcc(file_path):
         mfcc = mfcc[:, :MAX_LEN]
 
     return mfcc.flatten()
+
 
 def predict_huruf(file_path, target_huruf):
     features = extract_mfcc(file_path)
@@ -45,6 +50,7 @@ def predict_huruf(file_path, target_huruf):
     result = "Betul" if detected_huruf == target_huruf else "Salah"
 
     return detected_huruf, confidence, result
+
 
 st.set_page_config(
     page_title="Iqra' 1 Pronunciation App",
@@ -77,11 +83,10 @@ st.markdown("""
 }
 
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    text-align: center;
     color: #333;
-    font-size: 13px;
+    font-size: 14px;
+    font-weight: 700;
     margin-bottom: 14px;
 }
 
@@ -107,19 +112,6 @@ st.markdown("""
     font-weight: 700;
     margin-bottom: 15px;
     border: 1px solid #6b9b5b;
-}
-
-.page-list {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: 15px;
-}
-
-.page-item {
-    padding: 9px 12px;
-    border-bottom: 1px solid #eee;
-    font-size: 14px;
 }
 
 .big-letter {
@@ -149,6 +141,13 @@ st.markdown("""
     justify-content: center;
     font-size: 42px;
     box-shadow: inset 0 0 0 6px rgba(255,255,255,0.5);
+}
+
+.section-label {
+    font-weight: 700;
+    color: #24401f;
+    margin-top: 15px;
+    margin-bottom: 5px;
 }
 
 .result-betul {
@@ -209,7 +208,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 arabic_map = {
-    "alif": "ا", "ba": "ب", "ta": "ت", "tha": "ث", "jim": "ج",
+    "alif": "أ", "ba": "بَ", "ta": "تَ", "tha": "ثَ", "jim": "ج",
     "hha": "ح", "kha": "خ", "dal": "د", "dhal": "ذ", "ra": "ر",
     "zay": "ز", "sin": "س", "shin": "ش", "sad": "ص", "dad": "ض",
     "tho": "ط", "zho": "ظ", "ain": "ع", "ghayn": "غ", "fa": "ف",
@@ -218,14 +217,16 @@ arabic_map = {
 }
 
 huruf_list = list(arabic_map.keys())
+malaysia_time = datetime.now(ZoneInfo("Asia/Kuala_Lumpur")).strftime("%H:%M")
 
 st.markdown('<div class="phone">', unsafe_allow_html=True)
 
-st.markdown("""
+st.markdown(f"""
 <div class="status">
-    <span>12:33</span>
-    <span>●●● 🔋</span>
+    <span>{malaysia_time}</span>
+    <span></span>
 </div>
+
 <div class="header">
     <span>‹</span>
     <b>Iqra' 1</b>
@@ -249,11 +250,32 @@ st.markdown(
 )
 
 st.markdown(
-    '<div class="instruction">Tekan dan sebut huruf untuk disemak</div>',
+    '<div class="instruction">Rakam suara atau muat naik rakaman untuk disemak</div>',
     unsafe_allow_html=True
 )
 
 st.markdown('<div class="mic-circle">🎙️</div>', unsafe_allow_html=True)
+
+audio_source_path = None
+
+st.markdown('<div class="section-label">Pilihan 1: Rakam suara secara langsung</div>', unsafe_allow_html=True)
+
+audio_bytes = audio_recorder(
+    text="Tekan untuk rakam suara",
+    recording_color="#e74c3c",
+    neutral_color="#8ab878",
+    icon_name="microphone",
+    icon_size="2x",
+)
+
+if audio_bytes:
+    st.audio(audio_bytes, format="audio/wav")
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp:
+        tmp.write(audio_bytes)
+        audio_source_path = tmp.name
+
+st.markdown('<div class="section-label">Pilihan 2: Muat naik rakaman suara</div>', unsafe_allow_html=True)
 
 uploaded_file = st.file_uploader(
     "Muat naik rakaman suara",
@@ -263,18 +285,19 @@ uploaded_file = st.file_uploader(
 if uploaded_file is not None:
     st.audio(uploaded_file)
 
+    file_extension = uploaded_file.name.split(".")[-1]
+
+    with tempfile.NamedTemporaryFile(
+        delete=False,
+        suffix=f".{file_extension}"
+    ) as tmp:
+        tmp.write(uploaded_file.read())
+        audio_source_path = tmp.name
+
+if audio_source_path is not None:
     if st.button("Semak Sebutan"):
-        file_extension = uploaded_file.name.split(".")[-1]
-
-        with tempfile.NamedTemporaryFile(
-            delete=False,
-            suffix=f".{file_extension}"
-        ) as tmp:
-            tmp.write(uploaded_file.read())
-            temp_path = tmp.name
-
         detected_huruf, confidence, result = predict_huruf(
-            temp_path,
+            audio_source_path,
             target_huruf
         )
 
@@ -302,6 +325,8 @@ if uploaded_file is not None:
 
             st.button("🔊 Dengar Sebutan Rujukan")
             st.button("Ulang Bacaan")
+else:
+    st.info("Sila rakam suara atau muat naik fail audio terlebih dahulu.")
 
 st.markdown("""
 <div class="nav-row">
