@@ -254,11 +254,11 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.markdown('<div class="mic-circle">🎙️</div>', unsafe_allow_html=True)
-
 audio_source_path = None
 
 st.markdown('<div class="section-label">Pilihan 1: Rakam suara secara langsung</div>', unsafe_allow_html=True)
+
+st.markdown('<div class="mic-circle">🎙️</div>', unsafe_allow_html=True)
 
 audio_bytes = audio_recorder(
     text="Tekan untuk rakam suara",
