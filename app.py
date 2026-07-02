@@ -117,10 +117,10 @@ if uploaded_file:
 
     if st.button("Check Pronunciation"):
 
-        with tempfile.NamedTemporaryFile(delete=False) as tmp:
+       file_extension = uploaded_file.name.split(".")[-1]
 
+            with tempfile.NamedTemporaryFile(delete=False, suffix=f".{file_extension}") as tmp:
             tmp.write(uploaded_file.read())
-
             temp_path = tmp.name
 
         detected_huruf, confidence, result = predict_huruf(
