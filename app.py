@@ -140,26 +140,21 @@ st.markdown("""
 .stAudioRecorder {
     display: flex !important;
     justify-content: center !important;
-    align-items: center !important;
     width: 100% !important;
     background: transparent !important;
-    box-shadow: none !important;
-    border: none !important;
-}
-
-.stAudioRecorder > div {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
 }
 
 .stAudioRecorder button {
-    background-color: transparent !important;
-    border: 5px solid rgba(255,255,255,0.9) !important;
+    background-color: #fffdf8 !important;
+    border: 5px solid #f6f4f1 !important;
     border-radius: 50% !important;
     width: 90px !important;
     height: 90px !important;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.10);
+}
+
+.stAudioRecorder svg {
+    color: #8ab878 !important;
 }
 
 .stAudioRecorder svg {
@@ -290,8 +285,8 @@ left, middle, right = st.columns([1.4, 1, 1.4])
 with middle:
     audio_bytes = audio_recorder(
         text="",
-        recording_color="transparent",
-        neutral_color="transparent",
+        recording_color="#fffdf8",
+        neutral_color="#fffdf8",
         icon_name="microphone",
         icon_size="3x",
     )
