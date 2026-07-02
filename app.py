@@ -365,18 +365,23 @@ else:
 
 prev_col, home_col, next_col = st.columns([1, 1, 1])
 
-with prev_col:
-    if st.button("‹ Sebelumnya"):
+nav_left, nav_middle, nav_right = st.columns([3, 6, 3])
+
+with nav_left:
+    if st.button("‹ Sebelumnya", use_container_width=True):
         st.session_state.huruf_index = (
             st.session_state.huruf_index - 1
         ) % len(huruf_list)
         st.rerun()
 
-with home_col:
-    st.markdown('<div class="home">⌂</div>', unsafe_allow_html=True)
+with nav_middle:
+    st.markdown(
+        '<div class="home">⌂</div>',
+        unsafe_allow_html=True
+    )
 
-with next_col:
-    if st.button("Seterusnya ›"):
+with nav_right:
+    if st.button("Seterusnya ›", use_container_width=True):
         st.session_state.huruf_index = (
             st.session_state.huruf_index + 1
         ) % len(huruf_list)
