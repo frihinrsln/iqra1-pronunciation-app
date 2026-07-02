@@ -5,121 +5,271 @@ import joblib
 import tempfile
 import soundfile as sf
 
-# ======================
-# CONFIG
-# ======================
-
 MAX_LEN = 100
 N_MFCC = 13
-
-# ======================
-# LOAD MODEL
-# ======================
 
 svm_model = joblib.load("iqra_huruf_svm_model_compressed.pkl")
 id_to_label = joblib.load("id_to_label.pkl")
 
-# ======================
-# MFCC EXTRACTION
-# ======================
-
 def extract_mfcc(file_path):
-
     y, sr = librosa.load(file_path, sr=16000, mono=True)
-
     y, _ = librosa.effects.trim(y, top_db=25)
 
-    if len(y) > 0:
-        y = librosa.util.normalize(y)
+    if len(y) == 0:
+        return None
 
-    mfcc = librosa.feature.mfcc(
-        y=y,
-        sr=16000,
-        n_mfcc=N_MFCC
-    )
+    y = librosa.util.normalize(y)
+
+    mfcc = librosa.feature.mfcc(y=y, sr=16000, n_mfcc=N_MFCC)
 
     if mfcc.shape[1] < MAX_LEN:
         pad_width = MAX_LEN - mfcc.shape[1]
-
-        mfcc = np.pad(
-            mfcc,
-            pad_width=((0, 0), (0, pad_width)),
-            mode="constant"
-        )
+        mfcc = np.pad(mfcc, ((0, 0), (0, pad_width)), mode="constant")
     else:
         mfcc = mfcc[:, :MAX_LEN]
 
     return mfcc.flatten()
 
-# ======================
-# PREDICTION
-# ======================
-
 def predict_huruf(file_path, target_huruf):
-
     features = extract_mfcc(file_path)
 
+    if features is None:
+        return None, 0.0, "Error"
+
     features = features.reshape(1, -1)
-
     prediction = svm_model.predict(features)[0]
-
     probability = svm_model.predict_proba(features)[0]
 
     detected_huruf = id_to_label[prediction]
-
     confidence = float(np.max(probability))
-
     result = "Betul" if detected_huruf == target_huruf else "Salah"
 
     return detected_huruf, confidence, result
 
-# ======================
-# UI
-# ======================
-
 st.set_page_config(
-    page_title="Iqra' Pronunciation Checker",
+    page_title="Iqra' 1 Pronunciation App",
     page_icon="📖",
     layout="centered"
 )
 
-st.title("📖 Iqra' Pronunciation Checker")
+st.markdown("""
+<style>
+.stApp {
+    background: #f6f4f1;
+}
 
-st.markdown(
-    """
-    AI-Based Iqra' Pronunciation Correction System
+.phone {
+    max-width: 390px;
+    margin: auto;
+    background: #fffdf8;
+    border: 8px solid #3b164f;
+    border-radius: 34px;
+    padding: 18px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
 
-    MFCC Feature Extraction + SVM Classification
-    """
-)
+.status {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #444;
+    margin-bottom: 10px;
+}
 
-huruf_list = [
-    "alif","ba","ta","tha","jim","hha","kha",
-    "dal","dhal","ra","zay","sin","shin",
-    "sad","dad","tho","zho","ain","ghayn",
-    "fa","qaf","kaf","lam","mim","nun",
-    "ha","waw","ya"
-]
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #333;
+    font-size: 13px;
+    margin-bottom: 14px;
+}
+
+.logo {
+    text-align: center;
+    font-size: 42px;
+    margin: 20px 0 8px 0;
+}
+
+.title {
+    text-align: center;
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 18px;
+}
+
+.green-card {
+    background: #a7c98b;
+    color: #24401f;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 15px;
+    border: 1px solid #6b9b5b;
+}
+
+.page-list {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.page-item {
+    padding: 9px 12px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+}
+
+.big-letter {
+    text-align: center;
+    font-size: 105px;
+    color: #444;
+    font-weight: bold;
+    margin: 12px 0;
+}
+
+.instruction {
+    text-align: center;
+    color: #777;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.mic-circle {
+    width: 85px;
+    height: 85px;
+    margin: 12px auto;
+    border-radius: 50%;
+    background: #8ab878;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 42px;
+    box-shadow: inset 0 0 0 6px rgba(255,255,255,0.5);
+}
+
+.result-betul {
+    text-align: center;
+    background: #e5f4df;
+    color: #367a2e;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #8ab878;
+    font-size: 24px;
+    font-weight: 800;
+    margin-top: 15px;
+}
+
+.result-salah {
+    text-align: center;
+    background: #ffe5e5;
+    color: #c62828;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #e57373;
+    font-size: 24px;
+    font-weight: 800;
+    margin-top: 15px;
+}
+
+.info-box {
+    background: #f1f1f1;
+    color: #333;
+    padding: 12px;
+    border-radius: 9px;
+    margin-top: 12px;
+    font-size: 14px;
+}
+
+.nav-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.nav-btn {
+    background: #a7c98b;
+    color: #24401f;
+    padding: 8px 12px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.home {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 30px;
+    color: #6da05c;
+}
+</style>
+""", unsafe_allow_html=True)
+
+arabic_map = {
+    "alif": "ا", "ba": "ب", "ta": "ت", "tha": "ث", "jim": "ج",
+    "hha": "ح", "kha": "خ", "dal": "د", "dhal": "ذ", "ra": "ر",
+    "zay": "ز", "sin": "س", "shin": "ش", "sad": "ص", "dad": "ض",
+    "tho": "ط", "zho": "ظ", "ain": "ع", "ghayn": "غ", "fa": "ف",
+    "qaf": "ق", "kaf": "ك", "lam": "ل", "mim": "م", "nun": "ن",
+    "ha": "ه", "waw": "و", "ya": "ي"
+}
+
+huruf_list = list(arabic_map.keys())
+
+st.markdown('<div class="phone">', unsafe_allow_html=True)
+
+st.markdown("""
+<div class="status">
+    <span>12:33</span>
+    <span>●●● 🔋</span>
+</div>
+<div class="header">
+    <span>‹</span>
+    <b>Iqra' 1</b>
+    <span>Log Keluar</span>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown('<div class="logo">📖</div>', unsafe_allow_html=True)
+st.markdown('<div class="title">Semakan Sebutan</div>', unsafe_allow_html=True)
+st.markdown('<div class="green-card">Iqra\' 1 - Halaman 1</div>', unsafe_allow_html=True)
 
 target_huruf = st.selectbox(
-    "Select Target Huruf",
-    huruf_list
+    "Pilih huruf",
+    huruf_list,
+    format_func=lambda x: f"{arabic_map[x]}  -  {x}"
 )
+
+st.markdown(
+    f'<div class="big-letter">{arabic_map[target_huruf]}</div>',
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    '<div class="instruction">Tekan dan sebut huruf untuk disemak</div>',
+    unsafe_allow_html=True
+)
+
+st.markdown('<div class="mic-circle">🎙️</div>', unsafe_allow_html=True)
 
 uploaded_file = st.file_uploader(
-    "Upload Audio Recording",
-    type=["wav","mp3","m4a"]
+    "Muat naik rakaman suara",
+    type=["wav", "mp3", "m4a"]
 )
 
-if uploaded_file:
-
+if uploaded_file is not None:
     st.audio(uploaded_file)
 
-    if st.button("Check Pronunciation"):
+    if st.button("Semak Sebutan"):
+        file_extension = uploaded_file.name.split(".")[-1]
 
-       file_extension = uploaded_file.name.split(".")[-1]
-
-            with tempfile.NamedTemporaryFile(delete=False, suffix=f".{file_extension}") as tmp:
+        with tempfile.NamedTemporaryFile(
+            delete=False,
+            suffix=f".{file_extension}"
+        ) as tmp:
             tmp.write(uploaded_file.read())
             temp_path = tmp.name
 
@@ -128,18 +278,37 @@ if uploaded_file:
             target_huruf
         )
 
-        st.subheader("Result")
-
-        st.write("Target Huruf:", target_huruf)
-
-        st.write("Detected Huruf:", detected_huruf)
-
-        st.write(
-            "Confidence:",
-            f"{confidence*100:.2f}%"
-        )
-
-        if result == "Betul":
-            st.success("✅ BETUL")
+        if result == "Error":
+            st.error("Audio tidak dapat diproses. Sila cuba rakaman yang lebih jelas.")
         else:
-            st.error("❌ SALAH")
+            if result == "Betul":
+                st.markdown('<div class="result-betul">✓ Betul</div>', unsafe_allow_html=True)
+            else:
+                st.markdown('<div class="result-salah">✕ Salah</div>', unsafe_allow_html=True)
+                st.caption("Sebutan belum tepat. Cuba dengar sebutan rujukan dan ulang bacaan.")
+
+            st.markdown(
+                f"""
+                <div class="info-box">
+                    <b>Huruf Sasaran:</b> {target_huruf} ({arabic_map[target_huruf]})<br>
+                    <b>Huruf Dikesan:</b> {detected_huruf} ({arabic_map.get(detected_huruf, '-')})<br>
+                    <b>Keyakinan Model:</b> {confidence * 100:.2f}%
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            st.progress(confidence)
+
+            st.button("🔊 Dengar Sebutan Rujukan")
+            st.button("Ulang Bacaan")
+
+st.markdown("""
+<div class="nav-row">
+    <div class="nav-btn">‹ Sebelumnya</div>
+    <div class="nav-btn">Seterusnya ›</div>
+</div>
+<div class="home">⌂</div>
+""", unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)
