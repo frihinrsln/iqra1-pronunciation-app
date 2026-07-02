@@ -129,18 +129,30 @@ st.markdown("""
     margin-bottom: 15px;
 }
 
-.mic-circle {
-    width: 85px;
-    height: 85px;
-    margin: 12px auto;
-    border-radius: 50%;
-    background: #8ab878;
-    color: white;
+.section-label {
+    font-weight: 700;
+    color: #24401f;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+/* Audio Recorder Styling */
+.stAudioRecorder {
     display: flex;
-    align-items: center;
     justify-content: center;
-    font-size: 42px;
-    box-shadow: inset 0 0 0 6px rgba(255,255,255,0.5);
+}
+
+.stAudioRecorder button {
+    background-color: #8ab878 !important;
+    border: 5px solid white !important;
+    border-radius: 50% !important;
+    width: 90px !important;
+    height: 90px !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.stAudioRecorder svg {
+    color: white !important;
 }
 
 .section-label {
@@ -249,24 +261,29 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+audio_source_path = None
+
+st.markdown(
+    '<div class="section-label">Pilihan 1: Rakam suara secara langsung</div>',
+    unsafe_allow_html=True
+)
+
 st.markdown(
     '<div class="instruction">Rakam suara atau muat naik rakaman untuk disemak</div>',
     unsafe_allow_html=True
 )
 
-audio_source_path = None
+# Center microphone button
+col1, col2, col3 = st.columns([1,1,1])
 
-st.markdown('<div class="section-label">Pilihan 1: Rakam suara secara langsung</div>', unsafe_allow_html=True)
-
-st.markdown('<div class="mic-circle">🎙️</div>', unsafe_allow_html=True)
-
-audio_bytes = audio_recorder(
-    text="Tekan untuk rakam suara",
-    recording_color="#e74c3c",
-    neutral_color="#8ab878",
-    icon_name="microphone",
-    icon_size="2x",
-)
+with col2:
+    audio_bytes = audio_recorder(
+        text="",
+        recording_color="#8ab878",
+        neutral_color="#8ab878",
+        icon_name="microphone",
+        icon_size="3x",
+    )
 
 if audio_bytes:
     st.audio(audio_bytes, format="audio/wav")
