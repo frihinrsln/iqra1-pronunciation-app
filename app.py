@@ -358,7 +358,13 @@ if audio_source_path is not None:
 
             st.progress(confidence)
 
-            st.button("🔊 Dengar Sebutan Rujukan")
+            reference_audio_path = f"reference_audio/{target_huruf}.m4a"
+
+            if st.button("🔊 Dengar Sebutan Rujukan"):
+                if os.path.exists(reference_audio_path):
+                    st.audio(reference_audio_path, format="audio/mp4")
+                else:
+                    st.warning("Audio rujukan untuk huruf ini belum dimuat naik.")
             st.button("Ulang Bacaan")
 else:
     st.info("Sila rakam suara atau muat naik fail audio terlebih dahulu.")
