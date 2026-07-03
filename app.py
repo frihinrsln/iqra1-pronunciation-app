@@ -366,6 +366,7 @@ if audio_source_path is not None:
 
                 reference_audio_path = os.path.join(
                     "reference_audio",
+                    "reference_audio",
                     f"{target_huruf}.m4a"
                 )
 
