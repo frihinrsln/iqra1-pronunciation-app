@@ -364,14 +364,16 @@ if audio_source_path is not None:
                     "Sebutan belum tepat. Sila dengar audio rujukan dan cuba semula."
                 )
 
-               reference_audio_path = os.path.join(
-                "reference_audio",
-                f"{target_huruf}.m4a"
+                reference_audio_path = os.path.join(
+                    "reference_audio",
+                    f"{target_huruf}.m4a"
                 )
 
                 if os.path.exists(reference_audio_path):
+                    
                     st.markdown("### 🔊 Audio Rujukan")
                     st.audio(reference_audio_path, format="audio/mp4")
+                    
                 else:
                     st.warning(f"Fail tidak dijumpai: {reference_audio_path}")
                     
