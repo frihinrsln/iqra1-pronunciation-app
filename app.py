@@ -331,32 +331,52 @@ if uploaded_file is not None:
         audio_source_path = tmp.name
 
 if audio_source_path is not None:
+
     if st.button("Semak Sebutan"):
+
         detected_huruf, confidence, result = predict_huruf(
             audio_source_path,
             target_huruf
         )
 
         if result == "Error":
-            st.error("Audio tidak dapat diproses. Sila cuba rakaman yang lebih jelas.")
+            st.error(
+                "Audio tidak dapat diproses. Sila cuba rakaman yang lebih jelas."
+            )
+
         else:
+
             if result == "Betul":
-                    st.markdown(
+
+                st.markdown(
                     '<div class="result-betul">✓ Betul</div>',
                     unsafe_allow_html=True
-                    )
+                )
 
             else:
-                    st.markdown(
+
+                st.markdown(
                     '<div class="result-salah">✕ Salah</div>',
                     unsafe_allow_html=True
+                )
+
+                st.caption(
+                    "Sebutan belum tepat. Sila dengar audio rujukan dan cuba semula."
+                )
+
+                reference_audio_path = (
+                    f"reference_audio/{target_huruf}.m4a"
+                )
+
+                if os.path.exists(reference_audio_path):
+
+                    st.markdown("### 🔊 Audio Rujukan")
+                    st.audio(reference_audio_path)
+
+                else:
+                    st.warning(
+                        "Audio rujukan untuk huruf ini belum dimuat naik."
                     )
-
-    reference_audio_path = f"reference_audio/{target_huruf}.m4a"
-
-    if os.path.exists(reference_audio_path):
-        st.markdown("### 🔊 Audio Rujukan")
-        st.audio(reference_audio_path)
 
             st.markdown(
                 f"""
@@ -371,16 +391,12 @@ if audio_source_path is not None:
 
             st.progress(confidence)
 
-            reference_audio_path = f"reference_audio/{target_huruf}.m4a"
-
-            if st.button("🔊 Dengar Sebutan Rujukan"):
-                if os.path.exists(reference_audio_path):
-                    st.audio(reference_audio_path, format="audio/mp4")
-                else:
-                    st.warning("Audio rujukan untuk huruf ini belum dimuat naik.")
             st.button("Ulang Bacaan")
+
 else:
-    st.info("Sila rakam suara atau muat naik fail audio terlebih dahulu.")
+    st.info(
+        "Sila rakam suara atau muat naik fail audio terlebih dahulu."
+    )
 
 prev_col, home_col, next_col = st.columns([1, 1, 1])
 
