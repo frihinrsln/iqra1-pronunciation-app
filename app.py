@@ -4,6 +4,7 @@ import librosa
 import joblib
 import tempfile
 import soundfile as sf
+import os
 
 from audio_recorder_streamlit import audio_recorder
 from datetime import datetime
@@ -340,10 +341,22 @@ if audio_source_path is not None:
             st.error("Audio tidak dapat diproses. Sila cuba rakaman yang lebih jelas.")
         else:
             if result == "Betul":
-                st.markdown('<div class="result-betul">✓ Betul</div>', unsafe_allow_html=True)
+                    st.markdown(
+                    '<div class="result-betul">✓ Betul</div>',
+                    unsafe_allow_html=True
+                    )
+
             else:
-                st.markdown('<div class="result-salah">✕ Salah</div>', unsafe_allow_html=True)
-                st.caption("Sebutan belum tepat. Cuba dengar sebutan rujukan dan ulang bacaan.")
+                    st.markdown(
+                    '<div class="result-salah">✕ Salah</div>',
+                    unsafe_allow_html=True
+                    )
+
+    reference_audio_path = f"reference_audio/{target_huruf}.m4a"
+
+    if os.path.exists(reference_audio_path):
+        st.markdown("### 🔊 Audio Rujukan")
+        st.audio(reference_audio_path)
 
             st.markdown(
                 f"""
