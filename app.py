@@ -61,172 +61,230 @@ st.set_page_config(
 
 st.markdown("""
 <style>
+/* ===== APP BACKGROUND ===== */
 .stApp {
-    background: #f6f4f1;
+    background:
+        radial-gradient(circle at top left, #6d28d9 0, transparent 32%),
+        radial-gradient(circle at bottom right, #facc15 0, transparent 30%),
+        linear-gradient(135deg, #14001f 0%, #25003d 45%, #0f0618 100%);
+    color: #ffffff;
 }
 
+/* ===== PHONE CONTAINER ===== */
 .phone {
-    max-width: 390px;
+    max-width: 410px;
     margin: auto;
-    background: #fffdf8;
-    border: 8px solid #3b164f;
-    border-radius: 34px;
-    padding: 18px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    background: linear-gradient(145deg, rgba(45, 18, 75, 0.92), rgba(21, 8, 37, 0.96));
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 38px;
+    padding: 20px;
+    box-shadow:
+        0 25px 60px rgba(0,0,0,0.55),
+        inset 0 0 22px rgba(255,255,255,0.05);
+    backdrop-filter: blur(18px);
 }
 
+/* ===== STATUS + HEADER ===== */
 .status {
     display: flex;
     justify-content: space-between;
     font-size: 12px;
-    color: #444;
-    margin-bottom: 10px;
+    color: #f8e9ff;
+    margin-bottom: 12px;
 }
 
 .header {
     display: flex;
     justify-content: space-between;
-    color: #333;
+    align-items: center;
+    color: #fff7cc;
     font-size: 14px;
     font-weight: 700;
-    margin-bottom: 14px;
+    margin-bottom: 18px;
 }
 
+/* ===== LOGO ===== */
 .logo {
     text-align: center;
-    font-size: 42px;
-    margin: 20px 0 8px 0;
+    font-size: 48px;
+    margin: 18px 0 8px 0;
+    filter: drop-shadow(0 8px 12px rgba(250,204,21,0.35));
 }
 
 .title {
     text-align: center;
-    font-weight: 700;
-    font-size: 20px;
+    font-weight: 800;
+    font-size: 23px;
+    color: #ffffff;
     margin-bottom: 18px;
+    letter-spacing: 0.4px;
 }
 
+/* ===== TOP CARD ===== */
 .green-card {
-    background: #a7c98b;
-    color: #24401f;
-    padding: 12px;
-    border-radius: 8px;
+    background: linear-gradient(135deg, #fde68a, #facc15);
+    color: #3b164f;
+    padding: 13px;
+    border-radius: 18px;
     text-align: center;
-    font-weight: 700;
-    margin-bottom: 15px;
-    border: 1px solid #6b9b5b;
+    font-weight: 800;
+    margin-bottom: 18px;
+    box-shadow:
+        0 10px 20px rgba(250,204,21,0.30),
+        inset 0 2px 4px rgba(255,255,255,0.55);
 }
 
+/* ===== SELECTBOX ===== */
+div[data-baseweb="select"] {
+    background: rgba(255,255,255,0.08);
+    border-radius: 14px;
+}
+
+/* ===== BIG LETTER 3D CARD ===== */
 .big-letter {
     text-align: center;
-    font-size: 105px;
-    color: #444;
-    font-weight: bold;
-    margin: 12px 0;
+    font-size: 120px;
+    color: #fff7cc;
+    font-weight: 900;
+    margin: 18px 0;
+    padding: 18px 0;
+    background:
+        radial-gradient(circle at top, rgba(250,204,21,0.25), transparent 55%),
+        linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03));
+    border-radius: 28px;
+    border: 1px solid rgba(255,255,255,0.16);
+    box-shadow:
+        0 18px 30px rgba(0,0,0,0.35),
+        inset 0 2px 6px rgba(255,255,255,0.16);
+    text-shadow:
+        0 5px 0 #3b164f,
+        0 14px 25px rgba(0,0,0,0.55);
 }
 
+/* ===== TEXT ===== */
 .instruction {
     text-align: center;
-    color: #777;
+    color: #e9d5ff;
     font-size: 14px;
-    margin-bottom: 15px;
+    margin-bottom: 14px;
 }
 
 .section-label {
-    font-weight: 700;
-    color: #24401f;
-    margin-top: 15px;
-    margin-bottom: 5px;
+    font-weight: 800;
+    color: #fde68a;
+    margin-top: 18px;
+    margin-bottom: 7px;
 }
 
+/* ===== MIC 3D ===== */
 .mic-circle {
-    width: 90px;
-    height: 90px;
-    margin: 12px auto 4px auto;
+    width: 100px;
+    height: 100px;
+    margin: 16px auto 6px auto;
     border-radius: 50%;
-    background: transparent;
-    border: 5px solid #8ab878;
-    color: #8ab878;
+    background: linear-gradient(145deg, #fde68a, #facc15);
+    border: 6px solid rgba(255,255,255,0.35);
+    color: #3b164f;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 42px;
-    box-shadow: 0 0 0 6px rgba(138,184,120,0.15);
+    font-size: 46px;
+    box-shadow:
+        0 16px 28px rgba(250,204,21,0.35),
+        inset 0 5px 8px rgba(255,255,255,0.65),
+        inset 0 -8px 12px rgba(120,53,15,0.25);
 }
 
-/* Hide recorder default text area */
+/* ===== RECORDER BUTTON ===== */
 .stAudioRecorder {
     display: flex !important;
     justify-content: center !important;
     width: 100% !important;
-    margin-top: -5px !important;
+    margin-top: 0px !important;
 }
 
 .stAudioRecorder button {
-    background-color: #8ab878 !important;
-    border: none !important;
-    border-radius: 20px !important;
-    padding: 4px 12px !important;
-    min-height: 28px !important;
-    font-size: 12px !important;
+    background: linear-gradient(135deg, #7c3aed, #4c1d95) !important;
+    border: 1px solid rgba(255,255,255,0.25) !important;
+    border-radius: 22px !important;
+    padding: 6px 16px !important;
+    min-height: 32px !important;
+    font-size: 13px !important;
+    color: white !important;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.30);
 }
 
 .stAudioRecorder svg {
     color: white !important;
 }
 
+/* ===== STREAMLIT BUTTONS ===== */
+.stButton > button {
+    background: linear-gradient(135deg, #facc15, #fde68a);
+    color: #3b164f;
+    border: none;
+    border-radius: 16px;
+    font-weight: 800;
+    padding: 0.6rem 1rem;
+    box-shadow: 0 10px 18px rgba(250,204,21,0.28);
+}
+
+.stButton > button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 24px rgba(250,204,21,0.38);
+}
+
+/* ===== RESULT CARDS ===== */
 .result-betul {
     text-align: center;
-    background: #e5f4df;
-    color: #367a2e;
-    padding: 15px;
-    border-radius: 12px;
-    border: 1px solid #8ab878;
-    font-size: 24px;
-    font-weight: 800;
-    margin-top: 15px;
+    background: linear-gradient(135deg, #dcfce7, #86efac);
+    color: #14532d;
+    padding: 16px;
+    border-radius: 20px;
+    font-size: 26px;
+    font-weight: 900;
+    margin-top: 18px;
+    box-shadow: 0 12px 24px rgba(34,197,94,0.28);
 }
 
 .result-salah {
     text-align: center;
-    background: #ffe5e5;
-    color: #c62828;
-    padding: 15px;
-    border-radius: 12px;
-    border: 1px solid #e57373;
-    font-size: 24px;
-    font-weight: 800;
-    margin-top: 15px;
+    background: linear-gradient(135deg, #fee2e2, #fca5a5);
+    color: #7f1d1d;
+    padding: 16px;
+    border-radius: 20px;
+    font-size: 26px;
+    font-weight: 900;
+    margin-top: 18px;
+    box-shadow: 0 12px 24px rgba(239,68,68,0.28);
 }
 
+/* ===== INFO BOX ===== */
 .info-box {
-    background: #f1f1f1;
-    color: #333;
-    padding: 12px;
-    border-radius: 9px;
-    margin-top: 12px;
+    background: rgba(255,255,255,0.12);
+    color: #fff7cc;
+    padding: 14px;
+    border-radius: 18px;
+    margin-top: 14px;
     font-size: 14px;
+    border: 1px solid rgba(255,255,255,0.16);
+    box-shadow: inset 0 1px 4px rgba(255,255,255,0.08);
 }
 
-.nav-row {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 15px;
+/* ===== AUDIO PLAYER ===== */
+audio {
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 14px;
 }
 
-.nav-btn {
-    background: #a7c98b;
-    color: #24401f;
-    padding: 8px 12px;
-    border-radius: 7px;
-    font-size: 13px;
-    font-weight: 700;
-}
-
+/* ===== HOME ICON ===== */
 .home {
     text-align: center;
     margin-top: 16px;
-    font-size: 30px;
-    color: #6da05c;
+    font-size: 32px;
+    color: #fde68a;
+    text-shadow: 0 6px 14px rgba(250,204,21,0.45);
 }
 </style>
 """, unsafe_allow_html=True)
